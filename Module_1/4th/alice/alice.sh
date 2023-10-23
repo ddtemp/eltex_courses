@@ -1,20 +1,14 @@
 #!/bin/bash
 
-book_file="/home/ddtemp/Desktop/Eltex/Eltex_courses/Module_1/4th/alice/alice.txt"
+# Подсчет количества букв в произведении
+text=$(<alice.txt)
+letter_count=$(echo "$text" | tr -cd '[:alpha:]' | wc -m)
+echo "Количество букв в произведении: $letter_count"
 
-# Задача 1: Вывести количество букв в произведении
-letters_count=$(cat "$book_file" | sed -e 's/[^[:alpha:]]//g' | wc -m)
+# Подсчет количества слов в произведении
+word_count=$(echo "$text" | tr -s '[:space:]' | wc -w)
+echo "Количество слов в произведении: $word_count"
 
-# Задача 2: Вывести количество слов в произведении
-words_count=$(cat "$book_file" | sed -e 's/[^[:alpha:]]/ /g' | tr -s ' ' | wc -w)
-
-# Задача 3: Вывести первое предложение, в котором упоминается королева
-queen_sentence=$(sed -n '/[.!?]/{s/.*королев[а-я]*[.!?].*/&/p;q}' "$book_file")
-
-# Задача 4: Вывести всех участников чаепития
-tea_party_participants=$(sed -n '/чаепитие/,$s/[^[:alpha:]]/ /g;p' "$book_file" | grep -o -w '\w\+' | sort | uniq)
-
-echo "Количество букв в произведении: $letters_count"
-echo "Количество слов в произведении: $words_count"
-echo "Первое упоминание королевы: $queen_sentence"
-echo "Участники чаепития: $tea_party_participants"
+# Поиск первого предложения, в котором упоминается королева
+sentence=$(echo "$text" | grep -oE "[^.!?]*королева[^.!?]*[.!?]" | head -n 1)
+echo "Первое предложение, в котором упоминается королева: $sentence"
